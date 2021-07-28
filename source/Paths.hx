@@ -58,6 +58,11 @@ class Paths
 		return getPath(file, type, library);
 	}
 
+	inline static public function webm(key:String, ?library:String = 'preload')
+	{
+		return getPath('videos/$key.webm', TEXT, library);
+	}
+
 	inline static public function lua(key:String,?library:String)
 	{
 		return getPath('data/$key.lua', TEXT, library);

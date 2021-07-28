@@ -186,6 +186,27 @@ class DownscrollOption extends Option
 	}
 }
 
+class MiddlescrollOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.middlescroll ? "Middlescroll ON" : "Middlescroll OFF";
+	}
+}
+
 class GhostTapOption extends Option
 {
 	public function new(desc:String)
@@ -927,5 +948,56 @@ class ResetSettings extends Option
 	private override function updateDisplay():String
 	{
 		return confirm ? "Confirm Settings Reset" : "Reset Settings";
+	}
+}
+
+class NoteSkinOption extends Option
+{
+	var fucker:Array<String>;
+
+	var num:Int = 0;
+	public function new(desc:String)
+	{
+		fucker = CoolUtil.coolTextFile(Paths.txt('images/skins/skins', 'shared'));
+		num = fucker.indexOf(FlxG.save.data.noteSkin);
+		super();
+		acceptValues = true;
+		description = desc;
+	}
+
+	override function press():Bool {
+		return false;
+	}
+
+	override function right():Bool {
+		num++;
+		if (num < 0)
+			num = fucker.length - 1;
+		if (num > fucker.length - 1)
+			num = 0;
+		FlxG.save.data.noteSkin = fucker[num];
+		display = updateDisplay();
+		return true;
+	}
+
+	override function left():Bool {
+		num--;
+		if (num < 0)
+			num = fucker.length - 1;
+		if (num > fucker.length - 1)
+			num = 0;
+		FlxG.save.data.noteSkin = fucker[num];
+		display = updateDisplay();
+		return true;
+	}
+
+	override function getValue():String
+	{
+		return 'Skin: ' + FlxG.save.data.noteSkin;
+	}
+
+	private override function updateDisplay():String
+	{
+		return 'Skin ' + FlxG.save.data.noteSkin;
 	}
 }

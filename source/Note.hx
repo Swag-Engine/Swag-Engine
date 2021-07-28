@@ -61,7 +61,7 @@ class Note extends FlxSprite
 
 	public var children:Array<Note> = [];
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?mustHit:Bool = false, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false)
 	{
 		super();
 
@@ -70,7 +70,6 @@ class Note extends FlxSprite
 
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
-
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
@@ -105,7 +104,7 @@ class Note extends FlxSprite
 
 		if (inCharter)
 		{
-			frames = Paths.getSparrowAtlas('NOTE_assets');
+			frames = Paths.getSparrowAtlas('skins/' + FlxG.save.data.noteSkin);
 
 			for (i in 0...4)
 			{
@@ -141,10 +140,10 @@ class Note extends FlxSprite
 						animation.add(dataColor[i] + 'holdend', [i + 4]); // Tails
 					}
 
-					setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+					setGraphicSize(Std.int(width * PlayState.daPixelZoom * (PlayStateChangeables.useMiddlescroll && !mustHit ? 0.5 : 1)));
 					updateHitbox();
 				default:
-					frames = Paths.getSparrowAtlas('NOTE_assets');
+					frames = Paths.getSparrowAtlas('skins/' + FlxG.save.data.noteSkin);
 
 					for (i in 0...4)
 					{
@@ -153,7 +152,7 @@ class Note extends FlxSprite
 						animation.addByPrefix(dataColor[i] + 'holdend', dataColor[i] + ' tail'); // Tails
 					}
 
-					setGraphicSize(Std.int(width * 0.7));
+					setGraphicSize(Std.int(width * 0.7 * (PlayStateChangeables.useMiddlescroll && !mustHit ? 0.5 : 1)));
 					updateHitbox();
 					
 					if(FlxG.save.data.antialiasing)
@@ -163,7 +162,7 @@ class Note extends FlxSprite
 			}
 		}
 
-		x += swagWidth * noteData;
+		x += swagWidth * noteData * (PlayStateChangeables.useMiddlescroll && !mustHit ? 0.5 : 1);
 		animation.play(dataColor[noteData] + 'Scroll');
 		originColor = noteData; // The note's origin color will be checked by its sustain notes
 
@@ -272,6 +271,7 @@ class Note extends FlxSprite
 
 			if (strumTime <= Conductor.songPosition)
 				wasGoodHit = true;
+			alpha = 0;
 		}
 
 		if (tooLate)

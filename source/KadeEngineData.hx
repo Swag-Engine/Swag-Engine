@@ -112,6 +112,11 @@ class KadeEngineData
 		if (FlxG.save.data.editor == null)
 			FlxG.save.data.editor = true;
 
+		if (FlxG.save.data.noteSkin == null)
+			FlxG.save.data.noteSkin = 'normal';
+
+		FlxG.save.data.noteSkin = 'vaporwave';
+
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
 		KeyBinds.gamepad = gamepad != null;

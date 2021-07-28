@@ -28,6 +28,7 @@ class OptionsMenu extends MusicBeatState
 		new OptionCategory("Gameplay", [
 			new DFJKOption(controls),
 			new DownscrollOption("Toggle making the notes scroll down rather than up."),
+			new MiddlescrollOption("Toggles making your notes in the center and the enemies pushed to the left and smaller."),
 			new GhostTapOption("Toggle counting pressing a directional input when no arrow is there as a miss."),
 			new Judgement("Customize your Hit Timings. (LEFT or RIGHT)"),
 			#if desktop
@@ -62,6 +63,10 @@ class OptionsMenu extends MusicBeatState
 			new Optimization("No characters or backgrounds. Just a usual rhythm game layout."),
 			new GraphicLoading("On startup, cache every character. Significantly decrease load times. (HIGH MEMORY)"),
 			new BotPlay("Showcase your charts and mods with autoplay.")
+		]),
+
+		new OptionCategory("Skins", [
+			new NoteSkinOption("Changes Your Note Skin")
 		]),
 		
 		new OptionCategory("Saves and Data", [
@@ -184,18 +189,30 @@ class OptionsMenu extends MusicBeatState
 				if (currentSelectedCat.getOptions()[curSelected].getAccept())
 				{
 					if (FlxG.keys.pressed.SHIFT)
+					{
+						if (FlxG.keys.pressed.RIGHT)
 						{
-							if (FlxG.keys.pressed.RIGHT)
-								currentSelectedCat.getOptions()[curSelected].right();
-							if (FlxG.keys.pressed.LEFT)
-								currentSelectedCat.getOptions()[curSelected].left();
+							currentSelectedCat.getOptions()[curSelected].right();
+							grpControls.members[curSelected].reType(currentSelectedCat.getOptions()[curSelected].getDisplay());
 						}
+						if (FlxG.keys.pressed.LEFT)
+						{
+							currentSelectedCat.getOptions()[curSelected].left();
+							grpControls.members[curSelected].reType(currentSelectedCat.getOptions()[curSelected].getDisplay());
+						}
+					}
 					else
 					{
 						if (FlxG.keys.justPressed.RIGHT)
+						{
 							currentSelectedCat.getOptions()[curSelected].right();
+							grpControls.members[curSelected].reType(currentSelectedCat.getOptions()[curSelected].getDisplay());
+						}
 						if (FlxG.keys.justPressed.LEFT)
+						{
 							currentSelectedCat.getOptions()[curSelected].left();
+							grpControls.members[curSelected].reType(currentSelectedCat.getOptions()[curSelected].getDisplay());
+						}
 					}
 				}
 				else
@@ -255,13 +272,13 @@ class OptionsMenu extends MusicBeatState
 					isCat = true;
 					grpControls.clear();
 					for (i in 0...currentSelectedCat.getOptions().length)
-						{
-							var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, currentSelectedCat.getOptions()[i].getDisplay(), true, false);
-							controlLabel.isMenuItem = true;
-							controlLabel.targetY = i;
-							grpControls.add(controlLabel);
-							// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-						}
+					{
+						var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, currentSelectedCat.getOptions()[i].getDisplay(), true, false);
+						controlLabel.isMenuItem = true;
+						controlLabel.targetY = i;
+						grpControls.add(controlLabel);
+						// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+					}
 					curSelected = 0;
 				}
 				

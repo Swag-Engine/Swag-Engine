@@ -67,7 +67,7 @@ class Caching extends MusicBeatState
 		text.alignment = FlxTextAlign.CENTER;
 		text.alpha = 0;
 
-		kadeLogo = new FlxSprite(FlxG.width / 2, FlxG.height / 2).loadGraphic(Paths.image('KadeEngineLogo'));
+		kadeLogo = new FlxSprite(FlxG.width / 2, FlxG.height / 2).loadGraphic(Paths.image('SwagEngine'));
 		kadeLogo.x -= kadeLogo.width / 2;
 		kadeLogo.y -= kadeLogo.height / 2 + 100;
 		text.y -= kadeLogo.height / 2 - 125;
@@ -142,6 +142,11 @@ class Caching extends MusicBeatState
 	override function update(elapsed) 
 	{
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.F)
+		{
+			FlxG.fullscreen = !FlxG.fullscreen;
+		}
 	}
 
 
@@ -164,7 +169,10 @@ class Caching extends MusicBeatState
 		for (i in music)
 		{
 			FlxG.sound.cache(Paths.inst(i));
-			FlxG.sound.cache(Paths.voices(i));
+			if(Assets.exists(Paths.voices(i)))
+			{
+				FlxG.sound.cache(Paths.voices(i));
+			}
 			trace("cached " + i);
 			done++;
 		}

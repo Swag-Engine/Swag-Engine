@@ -85,7 +85,7 @@ class Alphabet extends FlxSpriteGroup
 
 		listOAlphabets.clear();
 		x = pastX;
-		y = pastY;
+		//y = pastY;
 		
 		addText();
 	}

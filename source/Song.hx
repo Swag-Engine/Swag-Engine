@@ -39,6 +39,8 @@ typedef SwagSong =
 	var noteStyle:String;
 	var stage:String;
 	var validScore:Bool;
+	var cutsceneVideoPath:String;
+	var bgVideoPath:String;
 }
 
 class Song

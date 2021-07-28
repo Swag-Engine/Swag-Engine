@@ -1,4 +1,6 @@
 package;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import lime.app.Application;
 import openfl.utils.Future;
 import openfl.media.Sound;
@@ -48,6 +50,7 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
+	private static var weekColors:Array<FlxColor> = [-7179779,-7179779,-14535868,-7072173,-223529,-6237697,-34625,-608764];
 
 	public static var openedPreview = false;
 
@@ -65,8 +68,13 @@ class FreeplayState extends MusicBeatState
 		}
 	}
 
+	var bg:FlxSprite;
+	var scoreBG:FlxSprite;
+
 	override function create()
 	{
+		super.create();
+
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('data/freeplaySonglist'));
 
 		//var diffList = "";
@@ -175,11 +183,11 @@ class FreeplayState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
+		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		if(FlxG.save.data.antialiasing)
-			{
-				bg.antialiasing = true;
-			}
+		{
+			bg.antialiasing = true;
+		}
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -209,7 +217,7 @@ class FreeplayState extends MusicBeatState
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		// scoreText.alignment = RIGHT;
 
-		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 105, 0xFF000000);
+		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 105, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 
@@ -236,13 +244,11 @@ class FreeplayState extends MusicBeatState
 
 		// FlxG.sound.playMusic(Paths.music('title'), 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
-		selector = new FlxText();
+		//selector = new FlxText();
 
-		selector.size = 40;
-		selector.text = ">";
+		//selector.size = 40;
+		//selector.text = ">";
 		// add(selector);
-
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
 
 		// JUST DOIN THIS SHIT FOR TESTING!!!
 		/* 
@@ -260,8 +266,6 @@ class FreeplayState extends MusicBeatState
 
 			trace(md);
 		 */
-
-		super.create();
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String)
@@ -286,9 +290,7 @@ class FreeplayState extends MusicBeatState
 	
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
-		if (FlxG.sound.music.volume < 0.7)
+		super.update(elapsed);if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
@@ -299,7 +301,12 @@ class FreeplayState extends MusicBeatState
 			lerpScore = intendedScore;
 
 		scoreText.text = "PERSONAL BEST:" + lerpScore;
-		comboText.text = combo + '\n';
+		scoreBG.width = scoreText.width	+ 25;
+		scoreBG.x = FlxG.width - scoreBG.width;
+		diffText.x = FlxG.width - scoreBG.width/2 - diffText.textField.width/2;
+		scoreText.x = FlxG.width - scoreBG.width/2 - scoreText.textField.width/2;
+		diffCalcText.x = FlxG.width - scoreBG.width/2 - diffCalcText.textField.width/2;
+		
 
 		if (FlxG.sound.music.volume > 0.8)
 		{
@@ -425,8 +432,12 @@ class FreeplayState extends MusicBeatState
 		combo = Highscore.getCombo(songHighscore, curDifficulty);
 		#end
 		diffCalcText.text = 'RATING: ${DiffCalc.CalculateDiff(songData.get(songs[curSelected].songName)[curDifficulty])}';
-		diffText.text = CoolUtil.difficultyFromInt(curDifficulty).toUpperCase();
+		diffText.text = '< ' + CoolUtil.difficultyFromInt(curDifficulty).toUpperCase() + ' >';
 	}
+
+	private var vocals:FlxSound;
+
+	private var tween:FlxTween;
 
 	function changeSelection(change:Int = 0)
 	{
@@ -436,10 +447,11 @@ class FreeplayState extends MusicBeatState
 
 		// NGio.logEvent('Fresh');
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-
-
+		var lastSelection = curSelected;
 		curSelected += change;
+		if(tween != null)
+			tween.destroy();
+		tween = FlxTween.color(bg, 0.4, weekColors[songs[lastSelection].week], weekColors[songs[curSelected].week]);
 
 		if (curSelected < 0)
 			curSelected = songs.length - 1;
@@ -486,17 +498,29 @@ class FreeplayState extends MusicBeatState
 			var sound = new Sound();
 			sound.loadCompressedDataFromByteArray(bytes.getData(), bytes.length);
 			FlxG.sound.playMusic(sound);
+			//Conductor.changeBPM(songData.get(songs[curSelected].songName)[curDifficulty].bpm);
 		}
 		else
+		{
 			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+			if(vocals !=null)
+			{
+				vocals.stop();
+				FlxG.sound.list.remove(vocals);
+				vocals.destroy();
+			}
+			vocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+			FlxG.sound.list.add(vocals);
+			vocals.play();
+		}
 		#end
 
 		var hmm;
 			try
 			{
 				hmm = songData.get(songs[curSelected].songName)[curDifficulty];
-				if (hmm != null)
-					Conductor.changeBPM(hmm.bpm);
+				//if (hmm != null)
+					//Conductor.changeBPM(hmm.bpm);
 			}
 			catch(ex)
 			{}
