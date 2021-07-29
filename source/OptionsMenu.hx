@@ -41,6 +41,7 @@ class OptionsMenu extends MusicBeatState
 			new CustomizeGameplay("Drag and drop gameplay modules to your prefered positions!")
 		]),
 		new OptionCategory("Appearance", [
+			new NoteSplashesOption("Note Splashes when getting a sick"),
 			new EditorRes("Not showing the editor grid will greatly increase editor performance"),
 			new DistractionsAndEffectsOption("Toggle stage distractions that can hinder your gameplay."),
 			new CamZoomOption("Toggle the camera zoom in-game."),
@@ -67,6 +68,12 @@ class OptionsMenu extends MusicBeatState
 
 		new OptionCategory("Skins", [
 			new NoteSkinOption("Changes Your Note Skin")
+		]),
+		new OptionCategory("Colors", [
+			new ColorsOption("Changes Your Note Color", 0),
+			new ColorsOption("Changes Your Note Color", 1),
+			new ColorsOption("Changes Your Note Color", 2),
+			new ColorsOption("Changes Your Note Color", 3)
 		]),
 		
 		new OptionCategory("Saves and Data", [

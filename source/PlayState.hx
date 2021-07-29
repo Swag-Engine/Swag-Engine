@@ -1,5 +1,7 @@
 package;
 
+import openfl.geom.Vector3D;
+import ColorSwap.ColorSwapEffect;
 import Song.Event;
 import openfl.media.Sound;
 #if sys
@@ -208,6 +210,9 @@ class PlayState extends MusicBeatState
 	var bottomBoppers:FlxSprite;
 	var santa:FlxSprite;
 
+	var enemyColorSwap:Array<ColorSwapEffect>;
+	var playerColorSwap:Array<ColorSwapEffect>;
+
 	var fc:Bool = true;
 
 	var bgGirls:BackgroundGirls;
@@ -224,6 +229,7 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	var defaultCamZoom:Float = 1.05;
+	var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
 	public static var daPixelZoom:Float = 6;
 
@@ -399,6 +405,15 @@ class PlayState extends MusicBeatState
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial', 'tutorial');
+
+		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+		//Cache
+		for(i in 0...8)
+		{
+			var sploosh = new NoteSplash(-200, -200, 0);
+			sploosh.alpha = 0.1;
+			grpNoteSplashes.add(sploosh);
+		}
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -1092,9 +1107,14 @@ class PlayState extends MusicBeatState
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
+		
+		add(grpNoteSplashes);
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 		cpuStrums = new FlxTypedGroup<FlxSprite>();
+
+		playerColorSwap = new Array<ColorSwapEffect>();
+		enemyColorSwap = new Array<ColorSwapEffect>();
 
 		generateStaticArrows(0);
 		generateStaticArrows(1);
@@ -1225,6 +1245,7 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
+		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -1649,12 +1670,12 @@ class PlayState extends MusicBeatState
 		}
 		if (data == -1)
 		{
-			trace("couldn't find a keybind with the code " + key);
+			//trace("couldn't find a keybind with the code " + key);
 			return;
 		}
 		if (keys[data])
 		{
-			trace("ur already holding " + key);
+			//trace("ur already holding " + key);
 			return;
 		}
 
@@ -2020,7 +2041,26 @@ class PlayState extends MusicBeatState
 			}
 			// FlxG.log.add(i);
 			var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
-
+			var arrowColors:Array<FlxColor> = 
+			[
+				FlxG.save.data.leftColor,
+				FlxG.save.data.downColor,
+				FlxG.save.data.upColor,
+				FlxG.save.data.rightColor
+			];
+			var colorSwap:ColorSwapEffect;
+			colorSwap = new ColorSwapEffect();
+			babyArrow.shader = colorSwap.shader;
+			colorSwap.col = new Vector3D(arrowColors[i].red, arrowColors[i].green, arrowColors[i].blue);
+			colorSwap.ignorewhite = true;
+			colorSwap.active = false;
+			switch (player)
+			{
+				case 0:
+					enemyColorSwap.push(colorSwap);
+				case 1:
+					playerColorSwap.push(colorSwap);
+			}
 			// defaults if no noteStyle was found in chart
 			var noteTypeCheck:String = 'normal';
 
@@ -3093,6 +3133,8 @@ class PlayState extends MusicBeatState
 							if (Math.abs(daNote.noteData) == spr.ID)
 							{
 								spr.animation.play('confirm', true);
+								enemyColorSwap[Std.int(Math.abs(daNote.noteData))].active = true;
+								enemyColorSwap[Std.int(Math.abs(daNote.noteData))].ignorewhite = false;
 							}
 							if (spr.animation.curAnim.name == 'confirm' && noteTypeCheck != "pixel")
 							{
@@ -3278,6 +3320,7 @@ class PlayState extends MusicBeatState
 				if (spr.animation.finished)
 				{
 					spr.animation.play('static');
+					enemyColorSwap[spr.ID].active = false;
 					spr.centerOffsets();
 				}
 			});
@@ -3535,6 +3578,12 @@ class PlayState extends MusicBeatState
 				if (FlxG.save.data.accuracyMod == 0)
 					totalNotesHit += 1;
 				sicks++;
+				if (!daNote.isSustainNote && FlxG.save.data.noteSplashes)
+				{
+					var recycledNote = grpNoteSplashes.recycle(NoteSplash);
+					recycledNote.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
+					grpNoteSplashes.add(recycledNote);
+				}
 		}
 
 
@@ -3977,19 +4026,27 @@ class PlayState extends MusicBeatState
 		playerStrums.forEach(function(spr:FlxSprite)
 		{
 			if (pressArray[spr.ID] && spr.animation.curAnim.name != 'confirm')
+			{
+				playerColorSwap[spr.ID].active = true;
+				playerColorSwap[spr.ID].ignorewhite = true;
 				spr.animation.play('pressed');
+			}
 			if(PlayStateChangeables.botPlay)
 			{
 				if (spr.animation.finished)
 				{
 					spr.animation.play('static');
+					playerColorSwap[spr.ID].active = false;
 					spr.centerOffsets();
 				}
 			}
 			else
 			{
 				if (!holdArray[spr.ID])
+				{
+					playerColorSwap[spr.ID].active = false;
 					spr.animation.play('static');
+				}
 			}
 
 			if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
@@ -4334,6 +4391,8 @@ class PlayState extends MusicBeatState
 				if (Math.abs(note.noteData) == spr.ID)
 				{
 					spr.animation.play('confirm', true);
+					playerColorSwap[Std.int(Math.abs(note.noteData))].ignorewhite = false;
+					playerColorSwap[Std.int(Math.abs(note.noteData))].active = true;
 				}
 			});
 

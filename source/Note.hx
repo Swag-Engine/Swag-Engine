@@ -1,5 +1,8 @@
 package;
 
+import openfl.geom.Vector3D;
+import ColorSwap.ColorSwapEffect;
+import ColorSwap.ColorSwapShader;
 import flixel.addons.effects.FlxSkewedSprite;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -60,6 +63,19 @@ class Note extends FlxSprite
 	public var sustainActive:Bool = true;
 
 	public var children:Array<Note> = [];
+	public var colorSwap:ColorSwapEffect;
+
+	function updateColors()
+	{
+		var arrowColors:Array<FlxColor> = 
+		[
+			FlxG.save.data.leftColor,
+			FlxG.save.data.downColor,
+			FlxG.save.data.upColor,
+			FlxG.save.data.rightColor
+		];
+		colorSwap.col = new Vector3D(arrowColors[noteData].red, arrowColors[noteData].green, arrowColors[noteData].blue);
+	}
 
 	public function new(strumTime:Float, noteData:Int, ?mustHit:Bool = false, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false)
 	{
@@ -101,6 +117,12 @@ class Note extends FlxSprite
 
 		//defaults if no noteStyle was found in chart
 		var noteTypeCheck:String = 'normal';
+		
+		colorSwap = new ColorSwapEffect();
+		this.shader = this.colorSwap.shader;
+		this.updateColors();
+		colorSwap.ignorewhite = true;
+		colorSwap.active = true;
 
 		if (inCharter)
 		{

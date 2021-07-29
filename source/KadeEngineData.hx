@@ -1,3 +1,4 @@
+import flixel.util.FlxColor;
 import flixel.input.gamepad.FlxGamepad;
 import openfl.Lib;
 import flixel.FlxG;
@@ -115,7 +116,20 @@ class KadeEngineData
 		if (FlxG.save.data.noteSkin == null)
 			FlxG.save.data.noteSkin = 'normal';
 
-		FlxG.save.data.noteSkin = 'vaporwave';
+		if (FlxG.save.data.noteSplashes == null)
+			FlxG.save.data.noteSplashes = true;
+
+		if(FlxG.save.data.leftColor == null)
+			FlxG.save.data.leftColor = FlxColor.fromRGB(126, 106, 181);
+
+		if(FlxG.save.data.downColor == null)
+			FlxG.save.data.downColor = FlxColor.fromRGB(0, 255, 255);
+
+		if(FlxG.save.data.upColor == null)
+			FlxG.save.data.upColor = FlxColor.fromRGB(18, 250, 5);
+
+		if(FlxG.save.data.rightColor == null)
+			FlxG.save.data.rightColor = FlxColor.fromRGB(249, 57, 63);
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		

@@ -451,12 +451,12 @@ class FreeplayState extends MusicBeatState
 		curSelected += change;
 		if(tween != null)
 			tween.destroy();
-		tween = FlxTween.color(bg, 0.4, weekColors[songs[lastSelection].week], weekColors[songs[curSelected].week]);
+		tween = FlxTween.color(bg, 0.4, weekColors[Std.int(Math.abs(songs[lastSelection].week)) % weekColors.length], weekColors[Std.int(Math.abs(songs[curSelected].week)) % weekColors.length]);
 
 		if (curSelected < 0)
-			curSelected = songs.length - 1;
-		if (curSelected >= songs.length)
 			curSelected = 0;
+		if (curSelected >= songs.length)
+			curSelected = songs.length;
 
 		if (songs[curSelected].diffs.length != 3)
 		{
@@ -509,9 +509,12 @@ class FreeplayState extends MusicBeatState
 				FlxG.sound.list.remove(vocals);
 				vocals.destroy();
 			}
-			vocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
-			FlxG.sound.list.add(vocals);
-			vocals.play();
+			if(Assets.exists(Paths.voices(songs[curSelected].songName)))
+			{
+				vocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+				FlxG.sound.list.add(vocals);
+				vocals.play();
+			}
 		}
 		#end
 

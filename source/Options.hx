@@ -856,6 +856,49 @@ class LockWeeksOption extends Option
 	}
 }
 
+class NoteSplashesOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		FlxG.save.data.noteSplashes = !FlxG.save.data.noteSplashes;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.noteSplashes ? "Note Splashes On" : "Note Splashes Off";
+	}
+}
+
+class ColorsOption extends Option
+{
+	public var noteType:Int = 0;
+	public function new(desc:String, type:Int)
+	{
+		this.noteType = type;
+		this.description = desc;
+		super();
+	}
+
+	public override function press():Bool
+	{
+		OptionsMenu.instance.openSubState(new NoteColorMenu(noteType));
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		var dataColor:Array<String> = ['left', 'down', 'up', 'right'];
+		return dataColor[noteType] + " Note Color";
+	}
+}
+
 class ResetScoreOption extends Option
 {
 	var confirm:Bool = false;

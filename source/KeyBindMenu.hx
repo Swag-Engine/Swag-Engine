@@ -175,7 +175,7 @@ class KeyBindMenu extends FlxSubState
                         quit();
                     }
                     else if (gamepad.justPressed.RIGHT_TRIGGER){
-                        reset();
+                        reset();    
                     }
                 }
 
