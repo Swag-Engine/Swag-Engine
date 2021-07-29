@@ -89,13 +89,13 @@ class ColorSwapShader extends FlxShader
 					vec3 rgb = rgb2hsv(normalizeColor2(vec3(r, g, b)));
 					vec3 current = rgb2hsv(vec3(color[0], color[1], color[2]));
 					vec3 new = hsv2rgb(vec3(rgb[0], rgb[1], min(rgb[2]*(current[2]/rgb[2]), rgb[2])));
-					color = vec4(new[0]*rgb[2], new[1]*rgb[2], new[2]*rgb[2], color[3]);
+					color = vec4(new[0], new[1], new[2], color[3]);
 				}
 				else
 				{
 					if(!ignorewhite)
 					{
-						vec3 rgb = rgb2hsv(vec3(r, g, b));
+						vec3 rgb = rgb2hsv(normalizeColor2(vec3(r, g, b)));
 						vec3 current = rgb2hsv(vec3(color[0], color[1], color[2]));
 						vec3 new = hsv2rgb(vec3(rgb[0], rgb[1], min(rgb[2]*(current[2]/rgb[2]), rgb[2])));
 						color = vec4(new[0], new[1], new[2], color[3]);

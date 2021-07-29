@@ -452,14 +452,13 @@ class FreeplayState extends MusicBeatState
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		var lastSelection = curSelected;
 		curSelected += change;
+		if (curSelected < 0)
+			curSelected = songs.length-1;
+		if (curSelected >= songs.length)
+			curSelected = 0;
 		if(tween != null)
 			tween.destroy();
 		tween = FlxTween.color(bg, 0.4, weekColors[Std.int(Math.abs(songs[lastSelection].week)) % weekColors.length], weekColors[Std.int(Math.abs(songs[curSelected].week)) % weekColors.length]);
-
-		if (curSelected < 0)
-			curSelected = 0;
-		if (curSelected >= songs.length)
-			curSelected = songs.length;
 
 		if (songs[curSelected].diffs.length != 3)
 		{

@@ -34,7 +34,7 @@ using StringTools;
 
 class NoteColorMenu extends FlxSubState
 {
-	var colorText:Array<String> = ["R", "G", "B"];
+	var colorText:Array<String> = ["R", "G", "B", "RESET"];
 	var curSelected:Int = 0;
 	var colorTextDisplay:FlxText;
 	var noteColor:Int;
@@ -146,21 +146,35 @@ class NoteColorMenu extends FlxSubState
 	function textUpdate()
 	{
 		var shift:Bool = FlxG.keys.pressed.SHIFT;
-		if(FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+		if(colorText[curSelected] != "RESET")
 		{
-			colors[noteColor][curSelected] -= (shift ? 1 : 10);
-			if(colors[noteColor][curSelected] < 0)
-				colors[noteColor][curSelected] = 255;
-			if(colors[noteColor][curSelected] > 255)
-				colors[noteColor][curSelected] = 0;
+			if(FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+			{
+				colors[noteColor][curSelected] -= (shift ? 1 : 10);
+				if(colors[noteColor][curSelected] < 0)
+					colors[noteColor][curSelected] = 255;
+				if(colors[noteColor][curSelected] > 255)
+					colors[noteColor][curSelected] = 0;
+			}
+			if(FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+			{
+				colors[noteColor][curSelected] += (shift ? 1 : 10);
+				if(colors[noteColor][curSelected] < 0)
+					colors[noteColor][curSelected] = 255;
+				if(colors[noteColor][curSelected] > 255)
+					colors[noteColor][curSelected] = 0;
+			}
+			if(FlxG.keys.justPressed.ENTER)
+			{
+				quit();
+			}
 		}
-		if(FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+		else
 		{
-			colors[noteColor][curSelected] += (shift ? 1 : 10);
-			if(colors[noteColor][curSelected] < 0)
-				colors[noteColor][curSelected] = 255;
-			if(colors[noteColor][curSelected] > 255)
-				colors[noteColor][curSelected] = 0;
+			if(FlxG.keys.justPressed.ENTER)
+			{
+				colors[noteColor] = colorToArray(defaultColors[noteColor]);
+			}
 		}
 		if(FlxG.keys.justPressed.UP || FlxG.keys.justPressed.W)
 		{
@@ -174,20 +188,16 @@ class NoteColorMenu extends FlxSubState
 		{
 			curSelected++;
 			if(curSelected < 0)
-				curSelected = 2;
-			if(curSelected > 2)
+				curSelected = 3;
+			if(curSelected > 3)
 				curSelected = 0;
-		}
-		if(FlxG.keys.justPressed.ENTER)
-		{
-			quit();
 		}
 		colorTextDisplay.text = "\n\n";
 
-		for(i in 0...3){
+		for(i in 0...4){
 
 			var textStart = (i == curSelected) ? "> " : "  ";
-			colorTextDisplay.text += textStart + " " + colors[noteColor][i] + "\n";
+			colorTextDisplay.text += textStart + " " + colorText[i] + (colorText[i] != "RESET" ?  (" " + colors[noteColor][i] + "\n") : "");
 		}
 
 		colorTextDisplay.screenCenter();
