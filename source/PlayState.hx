@@ -3192,10 +3192,11 @@ class PlayState extends MusicBeatState
 						daNote.alpha = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					daNote.modAngle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
 				}
+				//:smil:
 				else if (!daNote.wasGoodHit && !daNote.modifiedByLua)
 				{
 					daNote.visible = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].visible;
-					daNote.x = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].x + (PlayStateChangeables.useMiddlescroll && !daNote.mustPress && !daNote.isSustainNote ? 25 : 0) + (PlayStateChangeables.useMiddlescroll && !daNote.mustPress && daNote.isSustainNote ? 15 : 0);
+					daNote.x = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].x + (PlayStateChangeables.useMiddlescroll && !daNote.mustPress && !daNote.isSustainNote ? 23 : 0) + (PlayStateChangeables.useMiddlescroll && !daNote.mustPress && daNote.isSustainNote ? 18 : 0);
 					if (!daNote.isSustainNote)
 						daNote.modAngle = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].angle;
 					if (daNote.sustainActive)
@@ -3204,23 +3205,29 @@ class PlayState extends MusicBeatState
 				}
 
 				if (daNote.isSustainNote && daNote.animation != null && FlxG.save.data.middleScroll)
+				{
+					if(daNote.mustPress || daNote.animation.curAnim.name.endsWith('holdend'))
 					{
-						if(daNote.mustPress || daNote.animation.curAnim.name.endsWith('holdend'))
-						{
-							daNote.x += daNote.width / 2 + 23;
-						}
-						else
-						{
-							daNote.x += daNote.width * 2 + (23/2);
-						}
+						daNote.x += daNote.width / 2 + 23;
+						if(PlayState.curStage.startsWith('school'))
+							daNote.x -= 11;
 					}
 					else
-					{ 
-						if(daNote.isSustainNote)
-						{
-							daNote.x += daNote.width / 2 + 23;
-						}
+					{
+						daNote.x += daNote.width * 2 + 23;
+						if(PlayState.curStage.startsWith('school'))
+							daNote.x += 80;
 					}
+				}
+				else
+				{ 
+					if(daNote.isSustainNote)
+					{
+						daNote.x += daNote.width / 2 + 20;
+						if(PlayState.curStage.startsWith('school'))
+							daNote.x -= 11;
+					}
+				}
 
 				// trace(daNote.y);
 				// WIP interpolation shit? Need to fix the pause issue

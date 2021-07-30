@@ -29,10 +29,13 @@ class PauseSubState extends MusicBeatSubstate
 	var perSongOffset:FlxText;
 	
 	var offsetChanged:Bool = false;
+	var lastOffset:Float;
 
 	public function new(x:Float, y:Float)
 	{
 		super();
+		lastOffset = PlayState.songOffset;
+
 
 		if (PlayState.instance.useVideo)
 		{
@@ -155,7 +158,26 @@ class PauseSubState extends MusicBeatSubstate
 				PlayState.songOffset -= 1;
 				sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
 				perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.';
+				if(PlayState.songOffset == lastOffset)
+				{
+					grpMenuShit.clear();
 
+					menuItems = ['Resume', 'Restart Song', 'Exit to menu'];
+
+					for (i in 0...menuItems.length)
+					{
+						var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
+						songText.isMenuItem = true;
+						songText.targetY = i;
+						grpMenuShit.add(songText);
+					}
+
+					changeSelection();
+
+					cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+					offsetChanged = false;
+					return;
+				}
 				// Prevent loop from happening every single time the offset changes
 				if(!offsetChanged)
 				{
@@ -183,6 +205,26 @@ class PauseSubState extends MusicBeatSubstate
 				PlayState.songOffset += 1;
 				sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
 				perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.';
+				if(PlayState.songOffset == lastOffset)
+				{
+					grpMenuShit.clear();
+
+					menuItems = ['Resume', 'Restart Song', 'Exit to menu'];
+
+					for (i in 0...menuItems.length)
+					{
+						var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
+						songText.isMenuItem = true;
+						songText.targetY = i;
+						grpMenuShit.add(songText);
+					}
+
+					changeSelection();
+
+					cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+					offsetChanged = false;
+					return;
+				}
 				if(!offsetChanged)
 				{
 					grpMenuShit.clear();
