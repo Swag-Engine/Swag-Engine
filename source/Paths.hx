@@ -1,5 +1,7 @@
 package;
 
+import sys.io.File;
+import sys.FileSystem;
 import openfl.utils.Assets;
 import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets.FlxGraphicAsset;
@@ -66,6 +68,25 @@ class Paths
 	inline static public function lua(key:String,?library:String)
 	{
 		return getPath('data/$key.lua', TEXT, library);
+	}
+
+	inline static public function hscript(key:String,?library:String)
+	{
+		return getPath('data/$key.hscript', TEXT, library);
+	}
+
+	static public function modchart(key:String,?library:String)
+	{
+		if(FileSystem.exists(hscript(key, library))) 
+		{
+			return hscript(key, library);
+		}
+		else
+		{
+			return lua(key, library);
+		}
+
+		return "";
 	}
 
 	inline static public function luaImage(key:String, ?library:String)

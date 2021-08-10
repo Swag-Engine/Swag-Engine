@@ -1,0 +1,17 @@
+function start(song) {
+
+}
+
+function beatHit(beat)
+{
+    trace("tewadsf");
+    setActorY(500, 3);
+}
+
+function update(elapsed)
+{
+}
+
+function stepHit(step)
+{
+}
