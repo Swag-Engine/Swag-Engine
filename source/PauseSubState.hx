@@ -29,6 +29,8 @@ class PauseSubState extends MusicBeatSubstate
 
 	var pauseMusic:FlxSound;
 	var perSongOffset:FlxText;
+
+	var practiceText:FlxText;
 	
 	var offsetChanged:Bool = false;
 	var lastOffset:Float;
@@ -82,10 +84,22 @@ class PauseSubState extends MusicBeatSubstate
 		balls.text = "Blue balled: " + PlayState.deathCounter;
 		balls.scrollFactor.set();
 		balls.setFormat(Paths.font('vcr.ttf'), 32);
+		balls.x = FlxG.width - (balls.width + 20);
 		balls.updateHitbox();
+		add(balls);
+
+		practiceText = new FlxText(20, 111, 0, "PRACTICE MODE", 32);
+        practiceText.scrollFactor.set();
+        practiceText.setFormat("assets/fonts/vcr.ttf", 32);
+        practiceText.updateHitbox();
+        practiceText.x = FlxG.width - (practiceText.width + 20);
+        practiceText.visible = PlayState.practiceMode;
+        add(practiceText);
 
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
+		practiceText.alpha = 0;
+		balls.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
@@ -93,7 +107,7 @@ class PauseSubState extends MusicBeatSubstate
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
-		FlxTween.tween(balls, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
+		FlxTween.tween(balls, {alpha: 1, y: balls.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.8});
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
@@ -290,6 +304,9 @@ class PauseSubState extends MusicBeatSubstate
                     PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), this.curSelected), PlayState.SONG.song.toLowerCase());
                     PlayState.storyDifficulty = this.curSelected;
 					FlxG.switchState(new PlayState());
+				case "Toggle Practice Mode":
+                    PlayState.practiceMode = !PlayState.practiceMode;
+					practiceText.visible = PlayState.practiceMode;
 				case "Exit to menu":
 					PlayState.deathCounter = 0;
 					PlayState.startTime = 0;

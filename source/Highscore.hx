@@ -20,7 +20,9 @@ class Highscore
 
 
 		#if !switch
-		NGio.postScore(score, song);
+			#if !mobile
+				NGio.postScore(score, song);
+			#end
 		#end
 
 		if(!FlxG.save.data.botplay)
@@ -56,7 +58,9 @@ class Highscore
 	{
 
 		#if !switch
-		NGio.postScore(score, "Week " + week);
+			#if !mobile
+				NGio.postScore(score, "Week " + week);
+			#end
 		#end
 
 		if(!FlxG.save.data.botplay)

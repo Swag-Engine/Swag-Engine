@@ -233,6 +233,14 @@ class PlayState extends MusicBeatState
 	var scoreTxt:FlxText;
 	var replayTxt:FlxText;
 
+	var score:FlxText;
+	var accTxt:FlxText;
+	var comboTxt:FlxText;
+	var npsTxt:FlxText;
+	var kpsTxt:FlxText;
+	var hitTxt:FlxText;
+	var missedTxt:FlxText;
+
 	public static var campaignScore:Int = 0;
 
 	var defaultCamZoom:Float = 1.05;
@@ -1213,7 +1221,7 @@ class PlayState extends MusicBeatState
 			+ " - "
 			+ CoolUtil.difficultyFromInt(storyDifficulty)
 			+ (Main.watermarks ? " | KE " + MainMenuState.kadeEngineVer : ""), 16);
-		kadeEngineWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		kadeEngineWatermark.setFormat(Paths.font("Roboto-Light.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		kadeEngineWatermark.scrollFactor.set();
 		add(kadeEngineWatermark);
 
@@ -1221,20 +1229,15 @@ class PlayState extends MusicBeatState
 			kadeEngineWatermark.y = FlxG.height * 0.9 + 45;
 
 		scoreTxt = new FlxText(FlxG.width / 2 - 235, healthBarBG.y + 50, 0, "", 20);
-
-		scoreTxt.screenCenter(X);
-
 		originalX = scoreTxt.x;
-
+		scoreTxt.x = FlxG.width - scoreTxt.textField.width;
 		scoreTxt.scrollFactor.set();
-
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-
+		scoreTxt.setFormat(Paths.font("Roboto-Light.ttf"), 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreTxt);
 
 		replayTxt = new FlxText(healthBarBG.x + healthBarBG.width / 2 - 75, healthBarBG.y + (PlayStateChangeables.useDownscroll ? 100 : -100), 0, "REPLAY",
 			20);
-		replayTxt.setFormat(Paths.font("vcr.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		replayTxt.setFormat(Paths.font("Roboto-Light.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		replayTxt.borderSize = 4;
 		replayTxt.borderQuality = 2;
 		replayTxt.scrollFactor.set();
@@ -3056,7 +3059,7 @@ class PlayState extends MusicBeatState
 							if (!PlayStateChangeables.botPlay)
 							{
 								if ((!daNote.mustPress || daNote.wasGoodHit || daNote.prevNote.wasGoodHit && !daNote.canBeHit)
-									&& daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= (strumLine.y + Note.swagWidth / 2))
+									&& daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + Note.swagWidth / 2))
 								{
 									// Clip to strumline
 									var swagRect = new FlxRect(0, 0, daNote.frameWidth * 2, daNote.frameHeight * 2);
@@ -3471,7 +3474,9 @@ class PlayState extends MusicBeatState
 
 					if (SONG.validScore)
 					{
+						#if !mobile
 						NGio.unlockMedal(60961);
+						#end
 						Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 					}
 
@@ -3622,7 +3627,7 @@ class PlayState extends MusicBeatState
 			songScore += Math.round(score);
 			songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
 
-			/* if (combo > 60)
+			/* if (combo > 60)	
 					daRating = 'sick';
 				else if (combo > 12)
 					daRating = 'good'
@@ -4113,7 +4118,7 @@ class PlayState extends MusicBeatState
 	public var fuckingVolume:Float = 1;
 	public var useVideo = false;
 
-	public static var webmHandler:WebmHandler;
+	public static var webmHandler:Dynamic;
 
 	public var playingDathing = false;
 
@@ -4152,7 +4157,7 @@ class PlayState extends MusicBeatState
 		var ourSource:String = "assets/videos/daWeirdVid/dontDelete.webm";
 		//WebmPlayer.SKIP_STEP_LIMIT = 90;
 		var str1:String = "WEBM SHIT";
-		webmHandler = new WebmHandler();
+		webmHandler = GlobalVideo.get();
 		webmHandler.source(ourSource);
 		webmHandler.makePlayer();
 		webmHandler.webm.name = str1;
