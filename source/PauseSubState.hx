@@ -2,7 +2,7 @@ package;
 
 import flixel.input.gamepad.FlxGamepad;
 import openfl.Lib;
-#if windows
+#if desktop
 import llua.Lua;
 #end
 import Controls.Control;
@@ -281,6 +281,7 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			var daSelected:String = menuItems[curSelected];
 
+			
 			switch (daSelected)
 			{
 				case "Resume":
@@ -293,6 +294,7 @@ class PauseSubState extends MusicBeatSubstate
 						PlayState.instance.remove(PlayState.instance.videoSprite);
 						PlayState.instance.removedVideo = true;
 					}
+					PlayState.instance.clean();
 					FlxG.resetState();
 				case "BACK":
 					this.menuItems = this.pauseOG;
@@ -323,8 +325,13 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.save.data.downscroll = false;
 					}
 					PlayState.loadRep = false;
+<<<<<<< HEAD
 					#if windows
 					if (PlayState.modchart != null)
+=======
+					#if desktop
+					if (PlayState.luaModchart != null)
+>>>>>>> origin
 					{
 						PlayState.modchart.die();
 						PlayState.modchart = null;
@@ -333,6 +340,8 @@ class PauseSubState extends MusicBeatSubstate
 					if (FlxG.save.data.fpsCap > 290)
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
 					
+					PlayState.instance.clean();
+
 					if (PlayState.isStoryMode)
 						FlxG.switchState(new StoryMenuState());
 					else

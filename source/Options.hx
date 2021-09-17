@@ -152,7 +152,7 @@ class EditorRes extends Option
 
 	public override function press():Bool
 	{
-		FlxG.save.data.editor = !FlxG.save.data.editor;
+		FlxG.save.data.editorBG = !FlxG.save.data.editorBG;
 		
 		display = updateDisplay();
 		return true;
@@ -160,7 +160,7 @@ class EditorRes extends Option
 
 	private override function updateDisplay():String
 	{
-		return  FlxG.save.data.editor ? "Show Editor Grid" : "Do not Show Editor Grid";
+		return  FlxG.save.data.editorBG ? "Show Editor Grid" : "Do not Show Editor Grid";
 	}
 
 }
@@ -285,6 +285,26 @@ class DistractionsAndEffectsOption extends Option
 	private override function updateDisplay():String
 	{
 		return "Distractions " + (!FlxG.save.data.distractions ? "off" : "on");
+	}
+}
+
+class Colour extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		FlxG.save.data.colour = !FlxG.save.data.colour;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Color Health Bar By Character " + (!FlxG.save.data.colour ? "off" : "on");
 	}
 }
 
@@ -997,6 +1017,7 @@ class ResetSettings extends Option
 		FlxG.save.data.watermark = null;
 		FlxG.save.data.ghost = null;
 		FlxG.save.data.distractions = null;
+		FlxG.save.data.colour = null;
 		FlxG.save.data.stepMania = null;
 		FlxG.save.data.flashing = null;
 		FlxG.save.data.resetButton = null;

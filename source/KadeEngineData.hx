@@ -74,7 +74,10 @@ class KadeEngineData
 		if (FlxG.save.data.distractions == null)
 			FlxG.save.data.distractions = true;
 		
-		if (FlxG.save.data.stepMania == null)
+	    	if (FlxG.save.data.colour == null)
+			FlxG.save.data.colour = true;
+		
+	        if (FlxG.save.data.stepMania == null)
 			FlxG.save.data.stepMania = false;
 
 		if (FlxG.save.data.flashing == null)
@@ -113,8 +116,8 @@ class KadeEngineData
 		if (FlxG.save.data.cacheImages == null)
 			FlxG.save.data.cacheImages = false;
 
-		if (FlxG.save.data.editor == null)
-			FlxG.save.data.editor = true;
+		if (FlxG.save.data.editorBG == null)
+			FlxG.save.data.editor = false;
 		
 		if (FlxG.save.data.zoom == null)
 			FlxG.save.data.zoom = 1;

@@ -18,7 +18,7 @@ import io.newgrounds.NG;
 #end
 import lime.app.Application;
 
-#if windows
+#if desktop
 import Discord.DiscordClient;
 #end
 
@@ -42,7 +42,7 @@ class MainMenuState extends MusicBeatState
 
 	public static var nightly:String = "";
 
-	public static var kadeEngineVer:String = "1.6.1" + nightly;
+	public static var kadeEngineVer:String = "1.7" + nightly;
 	public static var gameVer:String = "0.2.7.1";
 
 	var magenta:FlxSprite;
@@ -51,7 +51,8 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-		#if windows
+		clean();
+		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end

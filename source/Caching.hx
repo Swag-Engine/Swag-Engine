@@ -2,7 +2,7 @@
 package;
 
 import lime.app.Application;
-#if windows
+#if desktop
 import Discord.DiscordClient;
 #end
 import openfl.display.BitmapData;
@@ -157,6 +157,7 @@ class Caching extends MusicBeatState
 
 	function cache()
 	{
+		#if !linux
 		trace("LOADING: " + toBeDone + " OBJECTS.");
 
 		for (i in images)
@@ -189,6 +190,7 @@ class Caching extends MusicBeatState
 
 		trace(Assets.cache.hasBitmapData('GF_assets'));
 
+		#end
 		FlxG.switchState(new TitleState());
 	}
 
