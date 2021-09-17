@@ -1,4 +1,4 @@
-package modCharts;
+package modcharts;
 import llua.Convert;
 import llua.Lua;
 import llua.State;

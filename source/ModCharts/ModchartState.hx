@@ -1,4 +1,4 @@
-package modCharts;
+package modcharts;
 //IGNORE THIS FOR NOW
 // this file is for modchart things, this is to declutter playstate.hx
 

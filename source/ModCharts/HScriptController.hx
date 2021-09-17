@@ -1,4 +1,4 @@
-package modCharts;
+package modcharts;
 import hscript.Parser.Parser;
 import sys.io.File;
 import hscript.Interp;

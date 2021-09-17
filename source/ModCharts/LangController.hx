@@ -1,4 +1,4 @@
-package modCharts;
+package modcharts;
 
 class LangController
 {

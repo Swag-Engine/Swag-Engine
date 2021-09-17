@@ -48,12 +48,13 @@ class VideoState extends MusicBeatState {
 		super.create();
 		FlxG.autoPause = false;
 		doShit = false;
-		
+		#if cpp
 		if (GlobalVideo.isWebm)
 		{
 			videoFrames = Std.parseInt(sys.io.File.getContent(leSource.replace(".webm", "_FrameCount.txt")));
 			videoFrameRate = Std.parseInt(sys.io.File.getContent(leSource.replace(".webm", "_FrameRate.txt")));
 		}
+		#end
 		
 		fuckingVolume = FlxG.sound.music.volume;
 		FlxG.sound.music.volume = 0;

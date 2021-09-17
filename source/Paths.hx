@@ -1,7 +1,8 @@
 package;
-
+#if cpp
 import sys.io.File;
 import sys.FileSystem;
+#end
 import openfl.utils.Assets;
 import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets.FlxGraphicAsset;
@@ -77,6 +78,7 @@ class Paths
 
 	static public function modchart(key:String,?library:String)
 	{
+		#if cpp
 		if(FileSystem.exists(hscript(key, library))) 
 		{
 			return hscript(key, library);
@@ -85,8 +87,9 @@ class Paths
 		{
 			return lua(key, library);
 		}
+		#end
 
-		return "";
+		return hscript(key, library);
 	}
 
 	inline static public function luaImage(key:String, ?library:String)
