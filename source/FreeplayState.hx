@@ -186,11 +186,8 @@ class FreeplayState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		if(FlxG.save.data.antialiasing)
-		{
-			bg.antialiasing = true;
-		}
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg.antialiasing = FlxG.save.data.antialiasing;
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -490,6 +487,7 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		diffCalcText.text = 'RATING: ${DiffCalc.CalculateDiff(songData.get(songs[curSelected].songName)[curDifficulty])}';
+		diffText.text = CoolUtil.difficultyFromInt(curDifficulty).toUpperCase();
 		
 		#if PRELOAD_ALL
 		if (songs[curSelected].songCharacter == "sm")
