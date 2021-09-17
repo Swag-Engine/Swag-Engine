@@ -325,13 +325,8 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.save.data.downscroll = false;
 					}
 					PlayState.loadRep = false;
-<<<<<<< HEAD
 					#if windows
 					if (PlayState.modchart != null)
-=======
-					#if desktop
-					if (PlayState.luaModchart != null)
->>>>>>> origin
 					{
 						PlayState.modchart.die();
 						PlayState.modchart = null;
